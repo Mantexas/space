@@ -27,6 +27,10 @@ title = "Mantas Zdancius"
     targetRowHeight = 280
     targetRowHeightTolerance = 0.2
 
+[module]
+  [[module.imports]]
+    path = "github.com/nicokaiser/hugo-theme-gallery/v4"
+
 [outputs]
     home = ["HTML", "RSS"]
     page = ["HTML"]
