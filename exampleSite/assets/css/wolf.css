@@ -5,11 +5,12 @@
 }
 
 .wolf-hero {
-  height: 100vh;
+  min-height: 45vh;
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 4rem 1.5rem;
   background-color: var(--grain-black);
   overflow: hidden;
 }

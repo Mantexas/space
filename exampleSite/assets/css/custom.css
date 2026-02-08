@@ -1,18 +1,18 @@
 /* MASSIVE MENU TYPOGRAPHY */
-.menu-overlay__item {
+body > menu a {
     font-size: 8rem;
     line-height: 1;
     font-weight: 700;
 }
 
 /* FOOTER CORRECTIONS */
-footer.footer {
+body > footer {
     padding-top: 6rem;
     padding-bottom: 4rem;
     text-align: center;
 }
 
-.social-icons {
+section.social-icons {
     margin-bottom: 2rem;
     display: flex;
     justify-content: center;
@@ -20,7 +20,7 @@ footer.footer {
 }
 
 /* Corrects the "All Rights Reserved" alignment */
-.copyright {
+body > footer section:last-of-type {
     display: block;
     margin-top: 1rem;
     font-size: 0.8rem;
@@ -30,7 +30,7 @@ footer.footer {
 
 /* GAP FIXES */
 section.featured {
-    padding-bottom: 6rem !important; /* Forces gap between Featured and Galleries */
+    padding-bottom: 6rem !important;
 }
 
 section.galleries {
