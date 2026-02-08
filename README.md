@@ -12,9 +12,10 @@ This portfolio features curated collections of my photography work, built with H
 
 ## Current Collections
 
-- **Fashion & Beauty** (17 images) - Elegant portraits and editorial photography
-- **Nature** (27 images) - Capturing the raw beauty of the natural world
 - **Portfolio** (6 images) - A curated selection of my finest work (featured on homepage)
+- **Fashion & Beauty** (17 images) - Elegant portraits and editorial photography
+- **Running** (23 images) - Action and motion photography
+- **Nature** (27 images) - Capturing the raw beauty of the natural world
 
 ## How It Works
 
@@ -30,13 +31,23 @@ space/
 │   │   │   ├── index.md      # Gallery settings
 │   │   │   └── *.jpeg        # Your images
 │   │   ├── fashion-beauty/
+│   │   ├── Running/
 │   │   └── nature/
 │   ├── config/_default/
 │   │   └── hugo.toml         # Site configuration
-│   └── assets/css/
-│       └── custom.css        # Custom styling
-├── layouts/                  # Hugo templates (theme)
-├── assets/                   # Theme CSS/JS
+│   ├── assets/
+│   │   ├── css/
+│   │   │   ├── custom.css    # Site overrides (bundled into main.css)
+│   │   │   └── wolf.css      # Kodak Vision3 500T hero styles
+│   │   └── js/
+│   │       └── wolf.js       # Typing animation
+│   └── layouts/
+│       ├── _default/home.html        # Homepage (adds hero)
+│       └── partials/
+│           ├── wolf-hero.html        # Hero template
+│           └── head-custom.html      # Loads wolf CSS/JS
+├── layouts/                  # Theme templates (don't edit for site changes)
+├── assets/                   # Theme CSS/JS (don't edit for site changes)
 └── .github/workflows/        # Auto-deployment
 ```
 
@@ -193,6 +204,23 @@ Adjust in `hugo.toml`:
     boxSpacing = 8           # Gap between images
     targetRowHeight = 280    # Row height in pixels
 ```
+
+## Homepage Hero
+
+The homepage features a **Kodak Vision3 500T** inspired hero section with a typing animation:
+
+- **Warm tungsten text** (`#FFEDD5`) with halation glow on grain-black (`#080808`) background
+- **Typing animation** types "Mantas Zdancius" with a Kodak Red (`#E30613`) blinking cursor
+- **Progressive enhancement**: Hugo renders the title server-side; JavaScript adds the typing effect
+- **Files**: `wolf-hero.html` (template), `wolf.css` (styles), `wolf.js` (animation)
+
+## Design System
+
+See [`DESIGN.md`](DESIGN.md) for the full UI/UX design guide covering colors, typography, spacing, components, and consistency rules.
+
+## Development Guide
+
+See [`CLAUDE.md`](CLAUDE.md) for architecture details, the asset merge system, CSS selector reference, and development rules.
 
 ## Technical Details
 
