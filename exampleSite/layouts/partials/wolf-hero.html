@@ -1,0 +1,24 @@
+<section class="wolf-hero" aria-label="Animated introduction">
+  <div class="wolf-stage">
+    <!-- Wolf walks across and interacts with letters -->
+    <div class="wolf-container" aria-hidden="true">
+      <img src="{{ "images/wolf.svg" | relURL }}" alt="" class="wolf" />
+    </div>
+
+    <!-- Title with individual letters for physics interaction -->
+    <h1 class="wolf-title">
+      {{- $name := .Site.Title -}}
+      {{- range $i, $char := split $name "" -}}
+        {{- if eq $char " " -}}
+          <span class="letter letter-space" data-index="{{ $i }}">&nbsp;</span>
+        {{- else -}}
+          <span class="letter" data-index="{{ $i }}">{{ $char }}</span>
+        {{- end -}}
+      {{- end -}}
+    </h1>
+
+    {{ with .Params.Description }}
+      <p class="wolf-subtitle">{{ . | markdownify }}</p>
+    {{ end }}
+  </div>
+</section>

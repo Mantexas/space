@@ -1,7 +1,7 @@
-<!-- Panther Animation Styles -->
-{{ $pantherCSS := resources.Get "css/panther.css" | minify | fingerprint }}
-<link rel="stylesheet" href="{{ $pantherCSS.RelPermalink }}" />
+<!-- Wolf Animation Styles -->
+{{ $wolfCSS := resources.Get "css/wolf.css" | minify | fingerprint }}
+<link rel="stylesheet" href="{{ $wolfCSS.RelPermalink }}" />
 
-<!-- Panther Animation Script (deferred) -->
-{{ $pantherJS := resources.Get "js/panther.js" | minify | fingerprint }}
-<script src="{{ $pantherJS.RelPermalink }}" defer></script>
+<!-- Wolf Animation Script (deferred) -->
+{{ $wolfJS := resources.Get "js/wolf.js" | minify | fingerprint }}
+<script src="{{ $wolfJS.RelPermalink }}" defer></script>
