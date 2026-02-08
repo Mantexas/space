@@ -8,6 +8,7 @@
   min-height: 45vh;
   padding: 2rem 1.5rem 4rem;
   overflow: hidden;
+  background: transparent; /* Assuming dark theme handles background */
 }
 
 .wolf-stage {
@@ -44,6 +45,7 @@
   transform-origin: bottom center;
   will-change: transform;
   cursor: default;
+  position: relative;
 }
 
 .letter-space {
@@ -53,13 +55,13 @@
 /* Letter states - pressed when wolf steps on it */
 .letter.pressed {
   transform: translateY(12px) scaleY(0.88) rotate(-2deg);
-  color: var(--accent, #888);
+  color: var(--accent, #aaa);
 }
 
 /* Wolf sniffing a letter - letter tilts toward wolf */
 .letter.sniffed {
   transform: translateY(-3px) rotate(8deg) scale(1.05);
-  color: var(--accent, #888);
+  color: var(--accent, #fff);
 }
 
 /* Letter wobble when wolf jumps off */
@@ -100,89 +102,105 @@
   75% { transform: translateX(3px); }
 }
 
-/* Wolf container */
+/* Wolf container - moves horizontally */
 .wolf-container {
   position: absolute;
-  top: 50%;
-  transform: translateY(-70%);
+  top: 50%; /* Adjusted to align with text baseline roughly */
+  transform: translateY(-85%); /* Move up to stand ON the letters */
   z-index: 10;
   pointer-events: none;
   left: -200px;
+  will-change: left;
 }
 
+/* The Wolf Graphic */
 .wolf {
-  width: clamp(100px, 15vw, 180px);
+  width: clamp(100px, 15vw, 160px);
   height: auto;
   filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.3));
   transition: transform 0.3s ease;
+  will-change: transform;
 }
 
-/* Wolf behavior states */
+/* --- Wolf Animation States --- */
+
+/* Walking: Smooth lop/bob instead of steps */
 .wolf-container.walking .wolf {
-  animation: wolfWalk 0.4s steps(2) infinite;
+  animation: wolfWalk 0.8s ease-in-out infinite;
+  transform-origin: center bottom;
 }
 
 @keyframes wolfWalk {
   0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-3px) rotate(1deg); }
+  25% { transform: translateY(-3px) rotate(1.5deg); }
+  50% { transform: translateY(0) rotate(0deg); }
+  75% { transform: translateY(-3px) rotate(-1.5deg); }
 }
 
+/* Sniffing: Head down */
 .wolf-container.sniffing .wolf {
-  animation: wolfSniff 0.6s ease-in-out;
+  animation: wolfSniff 1.2s ease-in-out;
   transform-origin: center bottom;
 }
 
 @keyframes wolfSniff {
   0%, 100% { transform: rotate(0deg) translateY(0); }
-  30% { transform: rotate(15deg) translateY(5px); }
-  60% { transform: rotate(20deg) translateY(8px); }
+  20% { transform: rotate(15deg) translateY(5px); }
+  40% { transform: rotate(18deg) translateY(8px); }
+  60% { transform: rotate(15deg) translateY(5px); }
 }
 
+/* Jumping: Parabolic arc */
 .wolf-container.jumping .wolf {
-  animation: wolfJump 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: wolfJump 0.9s cubic-bezier(0.45, 0.05, 0.55, 0.95);
 }
 
 @keyframes wolfJump {
   0% { transform: translateY(0) rotate(0deg); }
-  30% { transform: translateY(-50px) rotate(-10deg); }
-  50% { transform: translateY(-60px) rotate(-5deg); }
+  10% { transform: translateY(10px) rotate(-5deg); /* Anticipation */ }
+  40% { transform: translateY(-80px) rotate(-5deg); /* Apex */ }
+  50% { transform: translateY(-90px) rotate(0deg); }
+  60% { transform: translateY(-80px) rotate(5deg); }
   100% { transform: translateY(0) rotate(0deg); }
 }
 
+/* Howling: Head up, chest out */
 .wolf-container.howling .wolf {
-  animation: wolfHowl 1.2s ease-in-out;
+  animation: wolfHowl 2s ease-in-out;
   transform-origin: center bottom;
 }
 
 @keyframes wolfHowl {
   0%, 100% { transform: rotate(0deg) scale(1); }
-  20% { transform: rotate(-10deg) scale(1.02); }
-  40%, 70% { transform: rotate(-25deg) scale(1.05); }
-  90% { transform: rotate(-5deg) scale(1.01); }
+  20% { transform: rotate(-15deg) scale(1.05) translateY(-5px); }
+  50% { transform: rotate(-25deg) scale(1.1) translateY(-10px); }
+  80% { transform: rotate(-15deg) scale(1.05) translateY(-5px); }
 }
 
+/* Cautious: Slower, lower */
 .wolf-container.cautious .wolf {
-  animation: wolfCautious 0.8s ease-in-out infinite;
+  animation: wolfCautious 1.5s ease-in-out infinite;
 }
 
 @keyframes wolfCautious {
   0%, 100% { transform: translateX(0) rotate(0deg); }
-  30% { transform: translateX(-5px) rotate(-3deg); }
-  60% { transform: translateX(3px) rotate(2deg); }
+  25% { transform: translateX(-3px) rotate(-2deg); }
+  75% { transform: translateX(3px) rotate(1deg); }
 }
 
+/* Paused: Just breathing */
 .wolf-container.paused .wolf {
-  animation: wolfPause 1.5s ease-in-out infinite;
+  animation: wolfBreath 3s ease-in-out infinite;
 }
 
-@keyframes wolfPause {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-2px); }
+@keyframes wolfBreath {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
 }
 
 /* Subtitle */
 .wolf-subtitle {
-  color: var(--text-2);
+  color: var(--text-2, #888);
   font-size: 1.0625rem;
   line-height: 1.5556;
   text-align: center;
@@ -197,46 +215,22 @@
   to { opacity: 1; }
 }
 
-/* Reduced motion - static wolf, no animations */
+/* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  .wolf-container {
-    display: none;
-  }
-
-  .letter {
-    transition: none !important;
-  }
-
-  .letter.wobble,
-  .letter.spring,
-  .letter.shiver {
-    animation: none !important;
-  }
-
-  .wolf-subtitle {
-    opacity: 1;
-    animation: none;
-  }
+  .wolf-container { display: none; }
+  .letter { transition: none !important; }
+  .wolf-subtitle { opacity: 1; animation: none; }
 }
 
 /* Mobile adjustments */
 @media (max-width: 640px) {
-  .wolf-hero {
-    min-height: 35vh;
-    padding: 1.5rem 1rem 3rem;
-  }
-
-  .wolf {
-    width: 80px;
-  }
-
-  .letter.pressed {
-    transform: translateY(8px) scaleY(0.92);
-  }
-
+  .wolf-hero { min-height: 35vh; }
+  .wolf { width: 100px; }
+  .wolf-container { transform: translateY(-75%); }
+  
   @keyframes wolfJump {
     0% { transform: translateY(0); }
-    50% { transform: translateY(-40px); }
+    50% { transform: translateY(-50px); }
     100% { transform: translateY(0); }
   }
 }
