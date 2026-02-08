@@ -11,16 +11,16 @@
     return;
   }
 
-  const wolf = document.querySelector('.wolf-container');
+  const wolfContainer = document.querySelector('.wolf-container');
   const wolfImg = document.querySelector('.wolf');
   const letters = document.querySelectorAll('.letter:not(.letter-space)');
   const stage = document.querySelector('.wolf-stage');
 
-  if (!wolf || !letters.length || !stage) return;
+  if (!wolfContainer || !letters.length || !stage) return;
 
-  // Animation timeline - array of actions
-  // Each action: { type, letterIndex, duration, moveDistance }
-  const behaviors = ['walk', 'sniff', 'pause', 'jump', 'howl', 'cautious', 'step'];
+  // Configuration
+  const SPEED = 0.15; // pixels per ms
+  const JUMP_SPEED = 0.35; // faster when jumping
 
   // State
   let currentX = -200;
@@ -45,13 +45,18 @@
   // Set wolf position
   function setWolfPosition(x) {
     currentX = x;
-    wolf.style.left = x + 'px';
+    wolfContainer.style.left = x + 'px';
   }
 
   // Set wolf behavior class
   function setWolfBehavior(behavior) {
-    behaviors.forEach(b => wolf.classList.remove(b));
-    if (behavior) wolf.classList.add(behavior);
+    // Remove all previous behaviors
+    const behaviors = ['walking', 'sniffing', 'paused', 'jumping', 'howling', 'cautious'];
+    behaviors.forEach(b => wolfContainer.classList.remove(b));
+    
+    if (behavior) {
+      wolfContainer.classList.add(behavior);
+    }
   }
 
   // Clear all letter states
@@ -62,19 +67,32 @@
   }
 
   // Animate wolf moving to position
-  function moveTo(targetX, duration, behavior = 'walking') {
+  function moveTo(targetX, behavior = 'walking') {
     return new Promise(resolve => {
       setWolfBehavior(behavior);
+      
       const startX = currentX;
       const distance = targetX - startX;
+      
+      // Calculate duration based on speed
+      const speed = behavior === 'jumping' ? JUMP_SPEED : SPEED;
+      const duration = Math.abs(distance) / speed;
+      
+      if (duration <= 0) {
+        resolve();
+        return;
+      }
+
       const startTime = performance.now();
 
       function animate(time) {
         const elapsed = time - startTime;
         const progress = Math.min(elapsed / duration, 1);
-        const eased = progress < 0.5
-          ? 2 * progress * progress
-          : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+        
+        // Linear movement for walking, ease-out for jump landing
+        const eased = behavior === 'jumping' 
+          ? progress // Linear horizontal for jump usually looks best with parabolic vertical
+          : progress;
 
         setWolfPosition(startX + distance * eased);
 
@@ -99,6 +117,7 @@
   // Sniff a letter
   async function sniffLetter(letterEl) {
     setWolfBehavior('sniffing');
+    await wait(400); // Wait for head to go down
     letterEl.classList.add('sniffed');
     await wait(800);
     letterEl.classList.remove('sniffed');
@@ -108,48 +127,39 @@
 
   // Step on a letter
   async function stepOnLetter(letterEl) {
-    setWolfBehavior('walking');
+    // Just trigger the visual effect, don't stop walking
     letterEl.classList.add('pressed');
-    await wait(400);
-  }
-
-  // Release a letter (wolf steps off)
-  function releaseLetter(letterEl) {
-    letterEl.classList.remove('pressed');
-    letterEl.classList.add('wobble');
-    setTimeout(() => letterEl.classList.remove('wobble'), 600);
+    setTimeout(() => {
+       letterEl.classList.remove('pressed');
+       letterEl.classList.add('wobble');
+       setTimeout(() => letterEl.classList.remove('wobble'), 500);
+    }, 400);
   }
 
   // Jump over letters
   async function jumpOver(letterEls) {
     setWolfBehavior('jumping');
-    letterEls.forEach(el => {
+    // Trigger spring effect on letters as we pass over
+    letterEls.forEach((el, index) => {
       setTimeout(() => {
         el.classList.add('spring');
         setTimeout(() => el.classList.remove('spring'), 800);
-      }, 200);
+      }, 100 + (index * 100));
     });
-    await wait(700);
+    // The visual jump is handled by CSS on the wolf container
+    // The horizontal movement is handled by moveTo
   }
 
   // Howl - affects nearby letters
   async function howl(nearbyLetters) {
     setWolfBehavior('howling');
-    nearbyLetters.forEach(el => el.classList.add('shiver'));
-    await wait(1400);
+    // Trigger shiver slightly delayed
+    setTimeout(() => {
+        nearbyLetters.forEach(el => el.classList.add('shiver'));
+    }, 500);
+    
+    await wait(2000);
     nearbyLetters.forEach(el => el.classList.remove('shiver'));
-  }
-
-  // Pause cautiously
-  async function pauseCautious() {
-    setWolfBehavior('cautious');
-    await wait(1000);
-  }
-
-  // Pause and look around
-  async function pauseLook() {
-    setWolfBehavior('paused');
-    await wait(800);
   }
 
   // Main choreographed animation sequence
@@ -158,131 +168,98 @@
     isAnimating = true;
 
     const letterPos = getLetterPositions();
+    if (!letterPos.length) return;
+
     const stageRect = stage.getBoundingClientRect();
     const wolfWidth = wolfImg ? wolfImg.offsetWidth : 120;
     const endX = stageRect.width + 100;
+    const startX = -wolfWidth - 50;
 
     clearLetterStates();
-    setWolfPosition(-200);
+    setWolfPosition(startX);
 
-    // Start: walk in from left
+    // Sequence Start
     await wait(500);
 
-    // Move to before first letter, pause cautiously
+    // 1. Walk in to the first letter
     const firstLetter = letterPos[0];
-    await moveTo(firstLetter.left - wolfWidth - 30, 1500, 'walking');
-    await pauseCautious();
+    await moveTo(firstLetter.left - wolfWidth - 20, 'walking');
+    
+    // 2. Cautious pause
+    setWolfBehavior('cautious');
+    await wait(1200);
 
-    // Sniff first letter
-    await moveTo(firstLetter.left - wolfWidth + 10, 400, 'walking');
+    // 3. Sniff first letter
+    await moveTo(firstLetter.left - wolfWidth + 10, 'walking'); // Get closer
     await sniffLetter(firstLetter.el);
 
-    // Step onto first few letters
-    let currentLetterIndex = 0;
-    let steppedLetters = [];
+    // 4. Walk across first name, stepping on letters
+    // "Mantas" has 6 letters. Let's walk to the middle.
+    const midName1 = letterPos[2]; // 'n'
+    await moveTo(midName1.center - wolfWidth/2, 'walking');
+    stepOnLetter(midName1.el); // Non-blocking
+    
+    // 5. Jump over the rest of the first name
+    const endName1 = letterPos[5]; // 's'
+    const jumpTargetX = endName1.right + 20;
+    const jumpLetters = letterPos.slice(3, 6).map(p => p.el);
+    
+    const jumpDist = jumpTargetX - currentX;
+    // We need to call jumpOver (visuals) and moveTo (position) together
+    jumpOver(jumpLetters);
+    await moveTo(jumpTargetX, 'jumping');
 
-    // Walk onto letter 0
-    await moveTo(firstLetter.center - wolfWidth / 2, 300, 'walking');
-    await stepOnLetter(letterPos[0].el);
-    steppedLetters.push(letterPos[0].el);
+    // 6. Pause in the space
+    setWolfBehavior('paused');
+    await wait(800);
 
-    // Walk to letter 2, stepping on letters
-    if (letterPos[2]) {
-      await moveTo(letterPos[2].center - wolfWidth / 2, 600, 'walking');
-      releaseLetter(letterPos[0].el);
-      await stepOnLetter(letterPos[2].el);
-      steppedLetters = [letterPos[2].el];
-    }
+    // 7. Howl at the moon (or the space)
+    // Affect letters on both sides
+    const howlLetters = [letterPos[5].el, letterPos[6] ? letterPos[6].el : null].filter(Boolean);
+    await howl(howlLetters);
 
-    // Pause and look around in the middle of first name
-    await pauseLook();
+    // 8. Walk slowly/cautiously through the second name
+    setWolfBehavior('cautious');
+    const lastLetter = letterPos[letterPos.length - 1];
+    
+    // Move to the end of the name
+    await moveTo(lastLetter.right + 20, 'walking');
 
-    // Jump over the next 2-3 letters
-    const jumpStart = 3;
-    const jumpEnd = Math.min(5, letterPos.length - 1);
-    const jumpLetters = letterPos.slice(jumpStart, jumpEnd + 1).map(p => p.el);
+    // 9. Final look back
+    setWolfBehavior('paused'); // or turn head if we had a sprite
+    await wait(600);
 
-    if (jumpLetters.length > 0) {
-      steppedLetters.forEach(el => releaseLetter(el));
-      steppedLetters = [];
+    // 10. Exit stage right
+    await moveTo(endX, 'walking');
 
-      const jumpTargetX = letterPos[jumpEnd].right + 20;
-      await jumpOver(jumpLetters);
-      await moveTo(jumpTargetX, 500, 'jumping');
-    }
-
-    // Find the space between names (around index 6 for "Mantas Zdancius")
-    const midPoint = Math.floor(letterPos.length / 2);
-
-    // Walk to middle, howl
-    if (letterPos[midPoint]) {
-      await moveTo(letterPos[midPoint].center - wolfWidth / 2, 800, 'walking');
-      const howlLetters = letterPos.slice(
-        Math.max(0, midPoint - 2),
-        Math.min(letterPos.length, midPoint + 3)
-      ).map(p => p.el);
-      await howl(howlLetters);
-    }
-
-    // Continue walking, stepping on a few more letters
-    const laterLetters = Math.floor(letterPos.length * 0.7);
-    if (letterPos[laterLetters]) {
-      await moveTo(letterPos[laterLetters].center - wolfWidth / 2, 1000, 'walking');
-      await stepOnLetter(letterPos[laterLetters].el);
-      await wait(300);
-
-      // Sniff the next letter
-      if (letterPos[laterLetters + 1]) {
-        await moveTo(letterPos[laterLetters + 1].center - wolfWidth / 2, 400, 'walking');
-        releaseLetter(letterPos[laterLetters].el);
-        await sniffLetter(letterPos[laterLetters + 1].el);
-      }
-    }
-
-    // Final jump over last couple letters
-    const finalJumpStart = letterPos.length - 2;
-    if (finalJumpStart > 0 && letterPos[finalJumpStart]) {
-      const finalJumpLetters = letterPos.slice(finalJumpStart).map(p => p.el);
-      await jumpOver(finalJumpLetters);
-      await moveTo(letterPos[letterPos.length - 1].right + 50, 600, 'jumping');
-    }
-
-    // Walk off stage
-    await moveTo(endX, 1200, 'walking');
-
-    clearLetterStates();
+    // Reset
     setWolfBehavior(null);
+    clearLetterStates();
     isAnimating = false;
 
-    // Restart after delay
-    setTimeout(runAnimation, 8000);
+    // Loop
+    setTimeout(runAnimation, 6000);
   }
 
-  // Start animation when visible
+  // Initialization
   function init() {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting && !isAnimating) {
           observer.disconnect();
-          setTimeout(runAnimation, 1000);
+          setTimeout(runAnimation, 500);
         }
       });
-    }, { threshold: 0.3 });
+    }, { threshold: 0.2 });
 
-    observer.observe(wolf);
+    if (wolfContainer) {
+        observer.observe(wolfContainer);
+    }
   }
 
-  // Initialize when DOM ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else {
     init();
   }
-
-  // Cleanup on page hide
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden && animationTimeout) {
-      clearTimeout(animationTimeout);
-    }
-  });
 })();
