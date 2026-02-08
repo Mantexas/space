@@ -1,1 +1,7 @@
-<!-- Custom <head> tags (e.g. analytics code) -->
+<!-- Panther Animation Styles -->
+{{ $pantherCSS := resources.Get "css/panther.css" | minify | fingerprint }}
+<link rel="stylesheet" href="{{ $pantherCSS.RelPermalink }}" />
+
+<!-- Panther Animation Script (deferred) -->
+{{ $pantherJS := resources.Get "js/panther.js" | minify | fingerprint }}
+<script src="{{ $pantherJS.RelPermalink }}" defer></script>

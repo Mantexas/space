@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 100" class="panther-svg">
+  <style>
+    .panther-body { fill: currentColor; }
+    .panther-leg { fill: currentColor; transform-origin: top center; }
+
+    /* Walk cycle for front left leg */
+    .leg-fl { animation: legFrontLeft 0.6s ease-in-out infinite; }
+    /* Walk cycle for front right leg */
+    .leg-fr { animation: legFrontRight 0.6s ease-in-out infinite; }
+    /* Walk cycle for back left leg */
+    .leg-bl { animation: legBackLeft 0.6s ease-in-out infinite; }
+    /* Walk cycle for back right leg */
+    .leg-br { animation: legBackRight 0.6s ease-in-out infinite; }
+
+    /* Subtle body bob */
+    .panther-group { animation: bodyBob 0.3s ease-in-out infinite; }
+
+    /* Tail sway */
+    .panther-tail { animation: tailSway 0.8s ease-in-out infinite; transform-origin: right center; }
+
+    @keyframes legFrontLeft {
+      0%, 100% { transform: rotate(-20deg); }
+      50% { transform: rotate(20deg); }
+    }
+
+    @keyframes legFrontRight {
+      0%, 100% { transform: rotate(20deg); }
+      50% { transform: rotate(-20deg); }
+    }
+
+    @keyframes legBackLeft {
+      0%, 100% { transform: rotate(15deg); }
+      50% { transform: rotate(-15deg); }
+    }
+
+    @keyframes legBackRight {
+      0%, 100% { transform: rotate(-15deg); }
+      50% { transform: rotate(15deg); }
+    }
+
+    @keyframes bodyBob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-2px); }
+    }
+
+    @keyframes tailSway {
+      0%, 100% { transform: rotate(-5deg); }
+      50% { transform: rotate(5deg); }
+    }
+  </style>
+
+  <g class="panther-group">
+    <!-- Tail -->
+    <path class="panther-body panther-tail" d="M170 45 Q190 35 195 50 Q190 55 185 50 Q180 45 170 48"/>
+
+    <!-- Body -->
+    <ellipse class="panther-body" cx="120" cy="50" rx="55" ry="22"/>
+
+    <!-- Head -->
+    <ellipse class="panther-body" cx="55" cy="42" rx="20" ry="16"/>
+    <!-- Ear left -->
+    <path class="panther-body" d="M42 28 L38 18 L48 26 Z"/>
+    <!-- Ear right -->
+    <path class="panther-body" d="M52 26 L55 16 L62 24 Z"/>
+    <!-- Snout -->
+    <ellipse class="panther-body" cx="38" cy="46" rx="8" ry="6"/>
+
+    <!-- Front left leg -->
+    <g class="leg-fl" style="transform-origin: 75px 65px;">
+      <path class="panther-leg" d="M70 62 L65 90 L72 90 L80 62"/>
+    </g>
+
+    <!-- Front right leg -->
+    <g class="leg-fr" style="transform-origin: 90px 65px;">
+      <path class="panther-leg" d="M85 62 L80 90 L87 90 L95 62"/>
+    </g>
+
+    <!-- Back left leg -->
+    <g class="leg-bl" style="transform-origin: 145px 65px;">
+      <path class="panther-leg" d="M140 62 L135 90 L142 90 L150 62"/>
+    </g>
+
+    <!-- Back right leg -->
+    <g class="leg-br" style="transform-origin: 160px 65px;">
+      <path class="panther-leg" d="M155 62 L150 90 L157 90 L165 62"/>
+    </g>
+  </g>
+</svg>
