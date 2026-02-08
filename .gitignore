@@ -16,6 +16,7 @@ exampleSite/hugo_stats.json
 # IDE
 .idea/
 .vscode/
+exampleSite/assets/jsconfig.json
 *.swp
 *.swo
 
