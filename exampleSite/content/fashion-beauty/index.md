@@ -4,7 +4,7 @@ description: Elegant portraits and editorial photography celebrating style, beau
 menus: "main"
 weight: 1
 params:
-  theme: light
+  theme: dark
   sort_order: asc
   sort_by: Name
 resources:

@@ -1,0 +1,14 @@
+{{ define "main" }}
+  {{ partial "title.html" . }}
+
+  <section class="articles-list">
+    <ul class="articles-simple-list">
+      {{ range where .Pages "Params.private" "ne" true }}
+        <li>
+          <span class="article-date">{{ .Date.Format "2006-01-02" }}</span>
+          <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+        </li>
+      {{ end }}
+    </ul>
+  </section>
+{{ end }}

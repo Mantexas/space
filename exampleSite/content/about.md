@@ -2,12 +2,11 @@
 layout: prose
 rss_ignore: true
 title: About
+description: "I make hard things look easy. Technical depth meets human understanding. Photographer and visual storyteller passionate about capturing moments that matter."
 menu:
   main:
     weight: 90
 ---
-
-## Mantas Zdancius
 
 I make hard things look easy. Technical depth meets human understanding.
 

@@ -2,9 +2,37 @@
   {{ partial "wolf-hero.html" . }}
   {{ partial "categories.html" }}
   {{ partial "featured.html" . }}
+
   <section class="galleries">
     {{ range where .Pages "Params.private" "ne" true }}
       {{ partial "album-card.html" . }}
     {{ end }}
   </section>
+
+  <!-- Recent Articles Preview -->
+  {{ $articles := where (where site.RegularPages "Section" "articles") "Params.private" "ne" true }}
+  {{ if gt (len $articles) 0 }}
+  <section class="home-articles">
+    <h2>Latest Articles</h2>
+    <ul class="home-articles-list">
+      {{ range first 3 $articles }}
+      <li>
+        <a href="{{ .RelPermalink }}">
+          <span class="article-title">{{ .Title }}</span>
+          <span class="article-date">{{ .Date.Format "Jan 2" }}</span>
+        </a>
+      </li>
+      {{ end }}
+    </ul>
+  </section>
+  {{ end }}
+
+  <!-- About Preview -->
+  {{ with site.GetPage "/about" }}
+  <section class="home-about">
+    <h2>About</h2>
+    <p>{{ .Params.description }}</p>
+    <a href="{{ .RelPermalink }}" class="read-more-link">Read more →</a>
+  </section>
+  {{ end }}
 {{ end }}
