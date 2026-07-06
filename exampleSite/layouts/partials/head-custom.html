@@ -1,1 +1,7 @@
-<!-- Custom <head> tags (e.g. analytics code) -->
+<!-- Wolf Animation Styles -->
+{{ $wolfCSS := resources.Get "css/wolf.css" | minify | fingerprint }}
+<link rel="stylesheet" href="{{ $wolfCSS.RelPermalink }}" />
+
+<!-- Wolf Animation Script (deferred) -->
+{{ $wolfJS := resources.Get "js/wolf.js" | minify | fingerprint }}
+<script src="{{ $wolfJS.RelPermalink }}" defer></script>

@@ -1,0 +1,50 @@
+:root {
+  --kodak-red: #E30613; /* Iconic Kodak Red */
+  --tungsten: #FFEDD5;  /* Warm 500T White */
+  --grain-black: #080808;
+}
+
+.wolf-hero {
+  min-height: 45vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4rem 1.5rem;
+  background-color: var(--grain-black);
+  overflow: hidden;
+}
+
+.wolf-container {
+  z-index: 10;
+  text-align: center;
+  position: relative;
+}
+
+.wolf-title {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: clamp(3rem, 8vw, 6rem);
+  font-weight: 700;
+  color: var(--tungsten);
+  /* The "Halation" effect (blooming highlights common in 500T film) */
+  text-shadow: 0 0 15px rgba(255, 237, 213, 0.6), 0 0 30px rgba(255, 100, 0, 0.2);
+  margin: 0;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.cursor {
+  display: inline-block;
+  width: 0.12em;
+  height: 1em;
+  background-color: var(--kodak-red);
+  margin-left: 5px;
+  vertical-align: middle;
+  /* Cinematic blink */
+  animation: blink 1.2s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}

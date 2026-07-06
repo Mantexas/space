@@ -1,0 +1,35 @@
+{{ define "main" }}
+  <article class="article">
+    <header class="article-header">
+      <div class="article-meta">
+        <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 2, 2006" }}</time>
+        {{ with .Params.categories }}
+          <span class="article-category">{{ index . 0 }}</span>
+        {{ end }}
+      </div>
+      <h1>{{ .Title }}</h1>
+      {{ with .Description }}
+        <p class="article-description">{{ . }}</p>
+      {{ end }}
+    </header>
+
+    <section class="article-content prose">
+      {{ .Content }}
+    </section>
+
+    <footer class="article-footer">
+      <h3>More Articles</h3>
+      <ul class="article-list-inline">
+        {{ $current := .RelPermalink }}
+        {{ range where site.RegularPages "Section" "articles" }}
+          {{ if and (ne .RelPermalink $current) (not .Params.private) }}
+          <li>
+            <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+            <span class="article-list-date">{{ .Date.Format "Jan 2, 2006" }}</span>
+          </li>
+          {{ end }}
+        {{ end }}
+      </ul>
+    </footer>
+  </article>
+{{ end }}

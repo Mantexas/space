@@ -1,6 +1,6 @@
 ---
-title: Fashion & Beauty
-description: Elegant portraits and editorial photography celebrating style, beauty, and the art of self-expression.
+title: Running
+description:
 menus: "main"
 weight: 1
 params:
