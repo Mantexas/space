@@ -93,9 +93,9 @@ The theme uses `rem` throughout. Base spacing relationships:
 | Section             | Top          | Bottom       | Horizontal   |
 |---------------------|-------------|--------------|--------------|
 | Hero                | `4rem`      | `4rem`       | `1.5rem`     |
-| Featured            | auto (theme) | `6rem`      | `1.5rem`     |
+| Featured            | auto (theme) | `3rem`/`4rem`| `1.5rem`    |
 | Galleries grid      | `0`         | `3rem`/`4rem`| `1.5rem`     |
-| Footer              | `6rem`      | `4rem`       | `2.5rem`     |
+| Footer              | `6rem` above icons | `4rem` | `1.5rem`    |
 | Header              | `0.5rem`    | `2rem`/`3rem`| `0.5rem`     |
 
 ### Gallery Grid
@@ -104,6 +104,7 @@ The theme uses `rem` throughout. Base spacing relationships:
 boxSpacing: 8px          # Gap between images in justified layout
 targetRowHeight: 280px   # Target height for image rows
 Grid gap: 2rem × 1.5rem  # Gallery card grid (row × column)
+Album grid: max 1536px, centered, 1.5rem side padding ≥640px (full-bleed mobile)
 ```
 
 **Breakpoints (gallery cards):**

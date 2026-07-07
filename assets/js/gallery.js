@@ -22,7 +22,7 @@ if (gallery) {
       rowWidth: containerWidth,
       spacing: Number.isInteger(params.boxSpacing) ? params.boxSpacing : 8,
       rowHeight: params.targetRowHeight || 288,
-      heightTolerance: Number.isInteger(params.targetRowHeightTolerance) ? params.targetRowHeightTolerance : 0.25,
+      heightTolerance: typeof params.targetRowHeightTolerance === "number" ? params.targetRowHeightTolerance : 0.25,
     });
 
     items.forEach((item, i) => {

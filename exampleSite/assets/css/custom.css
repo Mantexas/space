@@ -150,10 +150,10 @@ section.social-icons a:hover {
     color: var(--kodak-red);
 }
 
-/* FOOTER */
+/* FOOTER - last section's 4rem margin + icons' 2rem margin-top = 6rem above,
+   4rem below for a balanced close (see DESIGN.md spacing table) */
 body > footer {
-    padding-top: 2rem;
-    padding-bottom: 2rem;
+    padding: 0 1.5rem 4rem;
     text-align: center;
 }
 
@@ -175,13 +175,24 @@ section.social-icons {
 
 /* HERO - wolf.css handles all hero styles */
 
-/* SECTIONS */
-section.featured {
-    padding-bottom: 3rem;
-}
-
+/* SECTIONS - uniform vertical rhythm: every main section gets the theme's
+   3rem (mobile) / 4rem (desktop) bottom margin; no double-spacing hacks */
 section.galleries {
     margin-top: 0;
+}
+
+/* Contain album photo grids on desktop; mobile stays full-bleed */
+section.gallery {
+    max-width: 1536px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@media (min-width: 640px) {
+    section.gallery {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
 }
 
 /* LIGHTBOX */
@@ -208,11 +219,11 @@ section.galleries {
     }
 }
 
-/* HOMEPAGE - Articles Preview */
+/* HOMEPAGE - Articles Preview
+   (centering, x-padding and 3/4rem bottom margin come from the theme's
+   `main > section` rule - only the width needs constraining) */
 .home-articles {
     max-width: 768px;
-    margin: 0 auto 3rem;
-    padding: 0 1.5rem;
 }
 
 .home-articles h2 {
@@ -253,8 +264,6 @@ section.galleries {
 /* HOMEPAGE - About Preview */
 .home-about {
     max-width: 768px;
-    margin: 0 auto 3rem;
-    padding: 0 1.5rem;
 }
 
 .home-about h2 {
@@ -279,8 +288,6 @@ section.galleries {
 /* ARTICLES - List Page */
 .articles-list {
     max-width: 768px;
-    margin: 0 auto;
-    padding: 0 1.5rem;
 }
 
 .articles-simple-list {
@@ -308,11 +315,19 @@ section.galleries {
     font-weight: 500;
 }
 
-/* ARTICLES - Single Page */
+/* ARTICLES - Single Page
+   <article> is not matched by the theme's `main > section` spacing rule,
+   so it needs its own centering, x-padding and bottom margin */
 .article {
     max-width: 768px;
-    margin: 0 auto;
+    margin: 0 auto 3rem;
     padding: 0 1.5rem;
+}
+
+@media (min-width: 640px) {
+    .article {
+        margin-bottom: 4rem;
+    }
 }
 
 .article-header {
